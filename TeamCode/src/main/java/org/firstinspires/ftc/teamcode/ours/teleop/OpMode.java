@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ours;
+package org.firstinspires.ftc.teamcode.ours.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.*;
 import com.qualcomm.robotcore.hardware.*;
@@ -40,7 +40,6 @@ public class OpMode extends LinearOpMode {
 
             telemetry.addData("Arm 1 Angle", arm1.getPosition());
             telemetry.addData("Arm 2 Angle", arm2.getPosition());
-
 
             telemetry.update();
 
@@ -100,10 +99,6 @@ public class OpMode extends LinearOpMode {
 
             move(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, speed);
         }
-    }
-
-    public static double clamp(double value, double min, double max) {
-        return Math.min(Math.max(value, min), max);
     }
 
     private static void move(double x, double y, double r, double speed){

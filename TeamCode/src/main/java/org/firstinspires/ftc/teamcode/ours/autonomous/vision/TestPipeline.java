@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.ours.vision;
+package org.firstinspires.ftc.teamcode.ours.autonomous.vision;
 
 import android.annotation.SuppressLint;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;

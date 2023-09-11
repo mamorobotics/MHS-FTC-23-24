@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ours.freightFrenzy;
+package org.firstinspires.ftc.teamcode.ours.autonomous.freightfrenzy;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.ours.vision.CupDetector;
+import org.firstinspires.ftc.teamcode.ours.autonomous.vision.CupDetector;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;

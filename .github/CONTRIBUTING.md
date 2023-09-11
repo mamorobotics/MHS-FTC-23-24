@@ -19,6 +19,7 @@ If what you've read so far makes little sense, there are some very good git lear
 [Interactive Git Tutorial](https://try.github.io)
 
 ### Guidlines for experienced GIT users.
+
 If you are absolutely certain that you want to push the big green button above, read on.  Otherwise back _slowly away from keyboard_.
 
 The real intent for advanced users is often to issue a pull request from the [branch](https://www.atlassian.com/git/tutorials/using-branches/git-branch) on a local fork back to master on either the same local fork or a child of the team fork and not on the parent ftctechnh/ftc_app.  See [Creating a Pull Request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).

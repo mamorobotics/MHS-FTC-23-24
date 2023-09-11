@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ours.freightFrenzy;
+package org.firstinspires.ftc.teamcode.ours.autonomous.freightfrenzy;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -8,16 +8,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.ours.vision.CupDetector;
+import org.firstinspires.ftc.teamcode.ours.autonomous.vision.CupDetector;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name = "red_spin_close")
-public class Red_close_spin extends LinearOpMode {
-    Pose2d startPos = new Pose2d(-35, -62, Math.toRadians(90));
+@Autonomous(name = "red_spin_far")
+public class Red_far_spin extends LinearOpMode {
+    Pose2d startPos = new Pose2d(12, -62, Math.toRadians(90));
     static DcMotor spinner;
     static Servo bucketServo;
     static DcMotor trackMotor;
@@ -52,7 +52,7 @@ public class Red_close_spin extends LinearOpMode {
         bucketServo = hardwareMap.servo.get("BucketServo");
         trackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         trackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bucketServo.setPosition(.5);
+        setOuttakePos(telemetry, -10, .70);
         while (!opModeIsActive() && !isStopRequested()) {
             //bucketServo.setPosition(upright);
             cupPos = detector.getCupPosition(); // gets the pos of the duck
@@ -61,37 +61,40 @@ public class Red_close_spin extends LinearOpMode {
             sleep(100);
         }
         waitForStart();
+
+        TrajectorySequence trajSeq1 = drive.trajectorySequenceBuilder(startPos)
+                .forward(3)
+                .lineToSplineHeading(new Pose2d(2,-37,Math.toRadians(315)))
+                .build();
+        drive.followTrajectorySequence(trajSeq1);
+
         if (cupPos == 0) {
             setOuttakePos(telemetry, -950, .70);
-
         }
         if (cupPos == 1) {
             setOuttakePos(telemetry, -1400, .70);
-
         }
         if(cupPos == 2) {
             setOuttakePos(telemetry, -2050, .70);
-
         }
-        TrajectorySequence trajSeq1 = drive.trajectorySequenceBuilder(startPos)
-                .forward(3)
-                .lineToLinearHeading(new Pose2d(-58,-55,Math.toRadians(180)))
-                .build();
-        drive.followTrajectorySequence(trajSeq1);
-        spinner.setPower(-.40);
-        sleep(4000);
-        spinner.setPower(0);
+        bucketServo.setPosition(.90);
+        sleep(2000);
+        bucketServo.setPosition(.5);
+
+        setOuttakePos(telemetry, -855, .70);
 
         TrajectorySequence trajSeq2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(new Pose2d(-24,-37,Math.toRadians(235)))
+                .forward(10)
+                .lineToLinearHeading(new Pose2d(-57,-55,Math.toRadians(180)))
                 .build();
         drive.followTrajectorySequence(trajSeq2);
-        bucketServo.setPosition(1);
-        sleep(2000);
-        bucketServo.setPosition(.15);
-        setOuttakePos(telemetry,-500,.7);
+
+        spinner.setPower(.65);
+        sleep(3000);
+        spinner.setPower(0);
+
         TrajectorySequence trajSeq3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .forward(5)
+                .back(10)
                 .lineToLinearHeading(new Pose2d(-60,-35,Math.toRadians(0)))
                 .build();
 
@@ -108,7 +111,11 @@ public class Red_close_spin extends LinearOpMode {
         while (trackMotor.isBusy()){
             telemetry.addData("current pos", trackMotor.getCurrentPosition());
             telemetry.update();
-
+            if(trackMotor.getCurrentPosition() > -800) {
+                bucketServo.setPosition(.11);
+            } else{
+                bucketServo.setPosition(.5);
+            }
         }
         trackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         trackMotor.setPower(0);

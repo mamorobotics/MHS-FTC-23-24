@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ours.powerPlay;
+package org.firstinspires.ftc.teamcode.ours.autonomous.powerplay;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -6,15 +6,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.ours.vision.ConeDetectorPowerPlay;
+import org.firstinspires.ftc.teamcode.ours.autonomous.vision.ConeDetectorPowerPlay;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name = "Far_To_Same_Red")
-public class Far_to_same_terminal_red extends LinearOpMode {
-    Pose2d startPos = new Pose2d(36, -62, Math.toRadians(270));
+@Autonomous(name = "Far_To_Same_Blue")
+public class Far_to_same_terminal_blue extends LinearOpMode {
+    Pose2d startPos = new Pose2d(-36, 62, Math.toRadians(270));
     int cupSide = 1;
     OpenCvCamera webcam;
     ConeDetectorPowerPlay detector = new ConeDetectorPowerPlay(telemetry);
@@ -41,37 +41,40 @@ public class Far_to_same_terminal_red extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(startPos);
 
+        waitForStart();
+
         TrajectorySequence baseSeq = drive.trajectorySequenceBuilder(startPos)
-                .lineToSplineHeading(new Pose2d(36, 12, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(-36, -12, Math.toRadians(270)))
                 .back(48)
                 .turn(Math.toRadians(45))
                 .waitSeconds(0.5)
                 .turn(Math.toRadians(-45))
-                .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(180)))
                 .forward(20)
                 .waitSeconds(0.5)
-                .lineToLinearHeading(new Pose2d(48, -12, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-48, 12, Math.toRadians(180)))
+                .turn(Math.toRadians(-90))
                 .waitSeconds(0.5)
                 .build();
-        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(new Pose2d(48, -12, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(36, -36, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(60, -36, Math.toRadians(180)))
+        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(new Pose2d(-48, 12, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-36, 36, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(0)))
                 .build();
-        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(new Pose2d(48, -12, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(36, -36, Math.toRadians(90)))
+        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(new Pose2d(-48, 12, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-36, 36, Math.toRadians(270)))
                 .build();
-        TrajectorySequence seq3 = drive.trajectorySequenceBuilder(new Pose2d(48, -12, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(12,-12, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(12, -36, Math.toRadians(90)))
+        TrajectorySequence seq3 = drive.trajectorySequenceBuilder(new Pose2d(-48, 12, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-12, 12, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-12, 36, Math.toRadians(270)))
                 .build();
-        TrajectorySequence seqNone = drive.trajectorySequenceBuilder(new Pose2d(48, -12, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(12,-12,Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(12, -62, Math.toRadians(90)))
+        TrajectorySequence seqNone = drive.trajectorySequenceBuilder(new Pose2d(-48, 12, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-12, 12,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-12, 62, Math.toRadians(270)))
                 .build();
 
-        while (!opModeIsActive() && !isStopRequested()) {
+        /*while (!opModeIsActive() && !isStopRequested()) {
             cupSide = detector.getCopColor();
             String cupColor = "**Add Colors**";
             if(cupSide == 0) {
@@ -86,23 +89,21 @@ public class Far_to_same_terminal_red extends LinearOpMode {
             telemetry.addData("Cup Color", cupColor);
             telemetry.update();
             sleep(100);
-        }
-
-        waitForStart();
+        } */
 
         drive.followTrajectorySequence(baseSeq);
-        if(cupSide == 1) {
-            drive.followTrajectorySequence(seq1);
-        }
-        if(cupSide == 2) {
-            drive.followTrajectorySequence(seq2);
-        }
-        if(cupSide == 3) {
-            drive.followTrajectorySequence(seq3);
-        }
-        else{
-            drive.followTrajectorySequence(seqNone);
-        }
+//        if(cupSide == 1) {
+//            drive.followTrajectorySequence(seq1);
+//        }
+//        if(cupSide == 2) {
+//            drive.followTrajectorySequence(seq2);
+//        }
+//        if(cupSide == 3) {
+//            drive.followTrajectorySequence(seq3);
+//        }
+//        else{
+//            drive.followTrajectorySequence(seqNone);
+//        }
     }
 
 }
