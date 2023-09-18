@@ -13,5 +13,5 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.TheMagnificentMiles:MeepMeep:centerstage'
+    implementation 'com.github.NoahBres:MeepMeep:-SNAPSHOT'
 }
