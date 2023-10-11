@@ -62,11 +62,7 @@ public class AprilTagTester extends OpMode {
     public void loop() {
         ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
         for(AprilTagDetection tag : currentDetections){
-            switch(tag.id){
-                case 1:
-                    telemetry.addData("tag: ", tag.id);
-                    break;
-            }
+            telemetry.addData("tag " +  tag.id, "active");
         }
         telemetry.update();
     }
