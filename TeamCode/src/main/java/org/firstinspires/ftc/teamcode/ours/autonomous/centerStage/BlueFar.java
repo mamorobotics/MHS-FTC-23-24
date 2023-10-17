@@ -31,9 +31,13 @@ public class BlueFar extends LinearOpMode {
     private VisionPortal visionPortal;
 
     private int minConfidenceValue = 90;
-    private Vector2d centerPoint = null;
     @Override
     public void runOpMode() throws InterruptedException{
+        Pose2d startPos = new Pose2d(-60, -36, Math.toRadians(90));
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        int screenWidth = 1280;
+        Vector2d centerPoint = null;
+
         initTfod();
         while(!isStarted() || centerPoint == null){
             centerPoint = telemetryTfod();
@@ -43,13 +47,25 @@ public class BlueFar extends LinearOpMode {
 
         waitForStart();
 
-        Pose2d startPos = new Pose2d(-60, -36, Math.toRadians(90));
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
         TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startPos)
                 .lineToConstantHeading(new Vector2d(-61, -61))
                 .build();
         drive.followTrajectorySequence(seq1);
+
+        if(centerPoint == null){
+
+        }
+        else if(centerPoint.getX() < screenWidth/3){
+
+        }
+        else if(centerPoint.getX() > screenWidth/3 && centerPoint.getX() < (screenWidth/3)*2){
+
+        }
+        else{
+
+        }
+
+
         TrajectorySequence seq2 = drive.trajectorySequenceBuilder(seq1.end())
                 .splineToConstantHeading(new Vector2d(-36, -36), Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(90)))
