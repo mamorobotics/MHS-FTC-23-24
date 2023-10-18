@@ -47,25 +47,41 @@ public class BlueFar extends LinearOpMode {
 
         waitForStart();
 
-        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startPos)
+        TrajectorySequence seqLeft = drive.trajectorySequenceBuilder(startPos)
                 .lineToConstantHeading(new Vector2d(-61, -61))
                 .build();
-        drive.followTrajectorySequence(seq1);
+
+        TrajectorySequence seqMiddle = drive.trajectorySequenceBuilder(startPos)
+                .lineToConstantHeading(new Vector2d(-61, -61))
+                .build();
+
+        TrajectorySequence seqRight = drive.trajectorySequenceBuilder(startPos)
+                .lineToConstantHeading(new Vector2d(-61, -61))
+                .build();
+
+        Queue<Trajectory> trajectoryQueue;
+
+
 
         if(centerPoint == null){
 
         }
         else if(centerPoint.getX() < screenWidth/3){
-
+            trajectoryQueue.add(trajectory1);
+            trajectoryQueue.add(trajectory2);
+            trajectoryQueue.add(trajectory3);
+            trajectoryQueue.add(trajectory4);
         }
         else if(centerPoint.getX() > screenWidth/3 && centerPoint.getX() < (screenWidth/3)*2){
-
+            drive.followTrajectorySequence(seqMiddle);
         }
         else{
-
+            drive.followTrajectorySequence(seqRight);
         }
 
+        drive.followTrajectory(trajectoryQueue.poll());
 
+        /*
         TrajectorySequence seq2 = drive.trajectorySequenceBuilder(seq1.end())
                 .splineToConstantHeading(new Vector2d(-36, -36), Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(90)))
@@ -91,6 +107,7 @@ public class BlueFar extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(seq5);
+         */
     }
     /**
      * Initialize the TensorFlow Object Detection processor.
