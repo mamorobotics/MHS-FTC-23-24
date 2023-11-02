@@ -63,6 +63,10 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
+    private static final String[] LABELS = {
+            "dumbell",
+    };
+
     @Override
     public void runOpMode() {
 
@@ -109,10 +113,10 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
             // Use setModelAssetName() if the TF Model is built in as an asset.
             // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-            //.setModelAssetName(TFOD_MODEL_ASSET)
+            .setModelAssetName("RedAndBlueV2.tflite")
             //.setModelFileName(TFOD_MODEL_FILE)
 
-            //.setModelLabels(LABELS)
+            .setModelLabels(LABELS)
             //.setIsModelTensorFlow2(true)
             //.setIsModelQuantized(true)
             //.setModelInputSize(300)
@@ -151,7 +155,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        //tfod.setMinResultConfidence(0.75f);
+        tfod.setMinResultConfidence(0.75f);
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
