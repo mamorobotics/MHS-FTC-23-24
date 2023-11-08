@@ -12,6 +12,7 @@ public class DriverMode extends OpMode {
     public void init() {
         driveTrain.setDriveTrain(hardwareMap, "leftFront", "leftBack", "rightFront", "rightBack");
         driveTrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveTrain.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveTrain.reverse(DriveTrain.DriveTrainSide.LEFT);
     }
 

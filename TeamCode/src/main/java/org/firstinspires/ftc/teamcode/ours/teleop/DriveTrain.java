@@ -24,6 +24,13 @@ public class DriveTrain {
         BR.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
+    public void setRunMode(DcMotor.RunMode runMode) {
+        FL.setMode(runMode);
+        FR.setMode(runMode);
+        BL.setMode(runMode);
+        BR.setMode(runMode);
+    }
+
     public void reverse(DriveTrainSide side) {
         switch (side){
             case RIGHT:
