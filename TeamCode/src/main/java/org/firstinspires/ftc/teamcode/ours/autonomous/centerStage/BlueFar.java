@@ -19,6 +19,9 @@ import java.util.List;
 public class BlueFar extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+    private double leftOffset = 0.0;
+    private double rightOffset = 0.0;
+    private double bottomOffeset = 0.0;
 
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
@@ -77,8 +80,8 @@ public class BlueFar extends LinearOpMode {
         }
 
 //        drive.followTrajectory(trajectoryQueue.poll());
-
-        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(new Pose2d(60,60, Math.toRadians(90)))
+//TODO: calculate Offsets then change 55 to 70
+        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(new Pose2d(-55+leftOffset,-55+bottomOffeset, Math.toRadians(90)))
                 .splineToConstantHeading(new Vector2d(-36, -36), Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(90)))
                 //change
