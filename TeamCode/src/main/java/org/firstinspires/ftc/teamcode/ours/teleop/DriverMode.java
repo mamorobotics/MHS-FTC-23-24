@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.hardware.*;
 
 @ com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
 public class DriverMode extends OpMode {
-    static DriveTrain driveTrain;
+    static DriveTrain driveTrain = new DriveTrain();
     static double speed = 0.65;
 
     @Override
     public void init() {
-        driveTrain.setDriveTrain(hardwareMap, "leftFront", "leftBack", "rightFront", "rightBack");
+        driveTrain.setDriveTrain(hardwareMap, "leftFront", "leftRear", "rightFront", "rightRear");
         driveTrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         driveTrain.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveTrain.reverse(DriveTrain.DriveTrainSide.LEFT);
