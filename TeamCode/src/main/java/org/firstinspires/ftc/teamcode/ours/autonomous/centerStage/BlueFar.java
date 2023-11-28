@@ -62,26 +62,20 @@ public class BlueFar extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-61, -61))
                 .build();
 
-//        Queue<Trajectory> trajectoryQueue;
-
-
 
         if(centerPoint.getX() < screenWidth/3){
-//            trajectoryQueue.add(trajectory1);
-//            trajectoryQueue.add(trajectory2);
-//            trajectoryQueue.add(trajectory3);
-//            trajectoryQueue.add(trajectory4);
+
         }
         else if(centerPoint.getX() > screenWidth/3 && centerPoint.getX() < (screenWidth/3)*2){
-            drive.followTrajectorySequence(seqMiddle);
+            //drive.followTrajectorySequence(seqMiddle);
         }
         else{
-            drive.followTrajectorySequence(seqRight);
+            //drive.followTrajectorySequence(seqRight);
         }
 
 //        drive.followTrajectory(trajectoryQueue.poll());
 //TODO: calculate Offsets then change 55 to 70
-        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(new Pose2d(-55+leftOffset,-55+bottomOffeset, Math.toRadians(90)))
+        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(new Pose2d(-70,-70, Math.toRadians(90)))
                 .splineToConstantHeading(new Vector2d(-36, -36), Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(90)))
                 //change
