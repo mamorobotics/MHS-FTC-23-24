@@ -36,62 +36,57 @@ public class BlueFar extends LinearOpMode {
     private int minConfidenceValue = 90;
     @Override
     public void runOpMode() throws InterruptedException{
-        Pose2d startPos = new Pose2d(-60, -36, Math.toRadians(90));
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        int screenWidth = 1280;
-        Vector2d centerPoint = null;
-
-        initTfod();
-        while(!isStarted() || centerPoint == null){
-            centerPoint = telemetryTfod();
-            telemetry.update();
-        }
-        visionPortal.close();
+//        int screenWidth = 1280;
+//        Vector2d centerPoint = null;
+//
+//        initTfod();
+//        while(!isStarted() || centerPoint == null){
+//            centerPoint = telemetryTfod();
+//            telemetry.update();
+//        }
+//        visionPortal.close();
 
         waitForStart();
 
-        TrajectorySequence seqLeft = drive.trajectorySequenceBuilder(startPos)
-                .lineToConstantHeading(new Vector2d(-61, -61))
-                .build();
+//        TrajectorySequence seqLeft = drive.trajectorySequenceBuilder(startPos)
+//                .lineToConstantHeading(new Vector2d(-61, -61))
+//                .build();
+//
+//        TrajectorySequence seqMiddle = drive.trajectorySequenceBuilder(startPos)
+//                .lineToConstantHeading(new Vector2d(-61, -61))
+//                .build();
+//
+//        TrajectorySequence seqRight = drive.trajectorySequenceBuilder(startPos)
+//                .lineToConstantHeading(new Vector2d(-61, -61))
+//                .build();
 
-        TrajectorySequence seqMiddle = drive.trajectorySequenceBuilder(startPos)
-                .lineToConstantHeading(new Vector2d(-61, -61))
-                .build();
 
-        TrajectorySequence seqRight = drive.trajectorySequenceBuilder(startPos)
-                .lineToConstantHeading(new Vector2d(-61, -61))
-                .build();
+//        if(centerPoint.getX() < screenWidth/3){
 
+//        }
+//        else if(centerPoint.getX() > screenWidth/3 && centerPoint.getX() < (screenWidth/3)*2){
 
-        if(centerPoint.getX() < screenWidth/3){
+//        }
+//        else{
 
-        }
-        else if(centerPoint.getX() > screenWidth/3 && centerPoint.getX() < (screenWidth/3)*2){
-            //drive.followTrajectorySequence(seqMiddle);
-        }
-        else{
-            //drive.followTrajectorySequence(seqRight);
-        }
+//        }
 
 //        drive.followTrajectory(trajectoryQueue.poll());
 //TODO: calculate Offsets then change 55 to 70
-        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(new Pose2d(-70,-70, Math.toRadians(90)))
-                .splineToConstantHeading(new Vector2d(-36, -36), Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(90)))
-                //change
-                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(-36, -60, Math.toRadians(270)))
-                //change
-                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(90)))
-                //change
-                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(-36, -60, Math.toRadians(270)))
-                //change
-                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(-36, 50, Math.toRadians(90)))
+        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(new Pose2d(-72+(14.25/2),72-(17/2), Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-36, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(30, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-40, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(30, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-40, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
                 .build();
-        drive.followTrajectorySequence(seq2);
+        drive.followTrajectorySequence(seq1);
     }
     /**
      * Initialize the TensorFlow Object Detection processor.
