@@ -22,6 +22,8 @@ public class BlueFar extends LinearOpMode {
     private double leftOffset = 0.0;
     private double rightOffset = 0.0;
     private double bottomOffeset = 0.0;
+    Pose2d startpos = new Pose2d(72 + (14.25 / 2), 72 - (17 / 2), Math.toRadians(270));
+
 
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
@@ -73,8 +75,9 @@ public class BlueFar extends LinearOpMode {
 //        }
 
 //        drive.followTrajectory(trajectoryQueue.poll());
+        drive.setPoseEstimate(startpos);
 //TODO: calculate Offsets then change 55 to 70
-        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(new Pose2d(72+(14.25/2),72-(17/2), Math.toRadians(270)))
+        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startpos)
                 .lineToLinearHeading(new Pose2d(-36, 36, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(30, 36, Math.toRadians(180)))
