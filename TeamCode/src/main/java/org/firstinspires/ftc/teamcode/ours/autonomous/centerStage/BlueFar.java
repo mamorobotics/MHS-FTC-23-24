@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.ours.autonomous.centerStage;
 
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -19,16 +21,17 @@ import java.util.List;
 public class BlueFar extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-    private double leftOffset = 0.0;
-    private double rightOffset = 0.0;
-    private double bottomOffeset = 0.0;
-    Pose2d startpos = new Pose2d(72 + (14.25 / 2), 72 - (17 / 2), Math.toRadians(270));
+    Pose2d startpos = new Pose2d(-72 + (14.25 / 2), 72 - (17 / 2), Math.toRadians(270));
 
 
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
     private TfodProcessor tfod;
+
+    private static final String[] LABELS = {
+            "dumbell",
+    };
 
     /**
      * The variable to store our instance of the vision portal.
@@ -39,15 +42,14 @@ public class BlueFar extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException{
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-//        int screenWidth = 1280;
-//        Vector2d centerPoint = null;
-//
-//        initTfod();
-//        while(!isStarted() || centerPoint == null){
-//            centerPoint = telemetryTfod();
-//            telemetry.update();
-//        }
-//        visionPortal.close();
+        Vector2d centerPoint = null;
+
+        initTfod();
+        while(!isStarted() || centerPoint == null){
+            centerPoint = telemetryTfod();
+            telemetry.update();
+        }
+        visionPortal.close();
 
         waitForStart();
 
@@ -64,19 +66,24 @@ public class BlueFar extends LinearOpMode {
 //                .build();
 
 
-//        if(centerPoint.getX() < screenWidth/3){
+        if(centerPoint.getX() < 500){
+            telemetry.addData("left", "");
+        }
+        else if(centerPoint.getX() > 500){
+            telemetry.addData("center", "");
+        }
+        else{
+            telemetry.addData("right", "");
+        }
+        telemetry.update();
 
-//        }
-//        else if(centerPoint.getX() > screenWidth/3 && centerPoint.getX() < (screenWidth/3)*2){
+        drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
+        Trajectory corner = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
+                        .strafeRight(27, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .build();
+        drive.followTrajectory(corner);
 
-//        }
-//        else{
-
-//        }
-
-//        drive.followTrajectory(trajectoryQueue.poll());
         drive.setPoseEstimate(startpos);
-//TODO: calculate Offsets then change 55 to 70
         TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startpos)
                 .lineToLinearHeading(new Pose2d(-36, 36, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
@@ -84,10 +91,8 @@ public class BlueFar extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(-40, 36, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(30, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-40, 36, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(35, 60, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(72 - (17 / 2), 72 - (14.25 / 2), Math.toRadians(180)))
                 .build();
         drive.followTrajectorySequence(seq1);
     }
@@ -101,10 +106,10 @@ public class BlueFar extends LinearOpMode {
 
                 // Use setModelAssetName() if the TF Model is built in as an asset.
                 // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-                //.setModelAssetName(TFOD_MODEL_ASSET)
+                .setModelAssetName("RedAndBlueV2.tflite")
                 //.setModelFileName(TFOD_MODEL_FILE)
 
-                //.setModelLabels(LABELS)
+                .setModelLabels(LABELS)
                 //.setIsModelTensorFlow2(true)
                 //.setIsModelQuantized(true)
                 //.setModelInputSize(300)
@@ -143,7 +148,7 @@ public class BlueFar extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        //tfod.setMinResultConfidence(0.75f);
+        tfod.setMinResultConfidence(0.75f);
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
@@ -154,22 +159,22 @@ public class BlueFar extends LinearOpMode {
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
      */
     private Vector2d telemetryTfod() {
-
+        double x = 1000000000;
+        double y = 1000000000;
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
 
-        Recognition object = currentRecognitions.get(0);
-        double x = (object.getLeft() + object.getRight()) / 2 ;
-        double y = (object.getTop()  + object.getBottom()) / 2 ;
+        // Step through the list of recognitions and display info for each one.
+        for (Recognition recognition : currentRecognitions) {
+            x = (recognition.getLeft() + recognition.getRight()) / 2 ;
+            y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
 
-        telemetry.addData(""," ");
-        telemetry.addData("Image", "%s (%.0f %% Conf.)", object.getLabel(), object.getConfidence() * 100);
-        telemetry.addData("- Position", "%.0f / %.0f", x, y);
-        telemetry.addData("- Size", "%.0f x %.0f", object.getWidth(), object.getHeight());
-
-        if(object.getConfidence() * 100 > minConfidenceValue){
-            return new Vector2d(x,y);
-        }
-        return null;
+            telemetry.addData(""," ");
+            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
+            telemetry.addData("- Position", "%.0f / %.0f", x, y);
+            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+        }   // end for() loop
+        if(x==1000000000){return null;}
+        return new Vector2d(x,y);
     }
 }
