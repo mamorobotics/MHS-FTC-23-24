@@ -78,19 +78,25 @@ public class BlueFar extends LinearOpMode {
         telemetry.update();
 
         drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
-        Trajectory corner = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
-                        .strafeRight(27, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                        .build();
-        drive.followTrajectory(corner);
+        Trajectory right = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
+                .strafeRight(27, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        drive.followTrajectory(right);
+
+        drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
+        Trajectory back = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
+                .back(2, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        drive.followTrajectory(back);
 
         drive.setPoseEstimate(startpos);
         TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startpos)
-                .lineToLinearHeading(new Pose2d(-36, 36, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(30, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-40, 36, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-36, 37, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, 37, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(30, 37, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-60, 37, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-40, 37, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, 37, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(35, 60, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(72 - (17 / 2), 72 - (14.25 / 2), Math.toRadians(180)))
                 .build();
