@@ -95,8 +95,8 @@ public class BlueFar extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(48, 37, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(30, 37, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(-60, 37, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-40, 37, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(48, 37, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-40, 35.5, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, 35.5, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(35, 60, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(72 - (17 / 2), 72 - (14.25 / 2), Math.toRadians(180)))
                 .build();
