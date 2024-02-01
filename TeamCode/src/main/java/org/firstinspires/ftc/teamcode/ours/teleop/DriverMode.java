@@ -6,17 +6,17 @@ import com.qualcomm.robotcore.hardware.*;
 @ com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
 public class DriverMode extends OpMode {
     static DriveTrain driveTrain = new DriveTrain();
-    static double speed = 0.65;
+    static double speed = 0.4;
     static Servo airServo;
     static Servo clawServo;
     static DcMotor barLift;
 
     @Override
     public void init() {
-        //driveTrain.setDriveTrain(hardwareMap, "leftFront", "leftRear", "rightFront", "rightRear");
-//        driveTrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        driveTrain.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        driveTrain.reverse(DriveTrain.DriveTrainSide.LEFT);
+        driveTrain.setDriveTrain(hardwareMap, "leftFront", "leftRear", "rightFront", "rightRear");
+        driveTrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        driveTrain.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveTrain.reverse(DriveTrain.DriveTrainSide.LEFT);
         //airServo = hardwareMap.get(Servo.class, "airServo");
         //clawServo = hardwareMap.get(Servo.class, "clawServo");
         barLift = hardwareMap.get(DcMotorEx.class, "barLift");
@@ -26,17 +26,17 @@ public class DriverMode extends OpMode {
 
     @Override
     public void loop() {
-        int pos = 1096;
-        //driveTrain.move(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, speed);
+        int pos = 1258;
+        driveTrain.move(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, speed);
         if(gamepad1.a){
             barLift.setTargetPosition(pos);
             barLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            barLift.setPower(0.2);
+            barLift.setPower(0.5);
         }
         if(gamepad1.b){
             barLift.setTargetPosition(0);
             barLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            barLift.setPower(0.2);
+            barLift.setPower(0.5);
         }
         if(gamepad1.x){
             airServo.setPosition(.3);
