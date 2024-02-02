@@ -41,8 +41,8 @@ public class DriverMode extends OpMode {
         if(gamepad1.x){
             airServo.setPosition(.3);
         }
-        telemetry.addData("Encoder Position", barLift.getCurrentPosition());
-        telemetry.addData("Desired Position", barLift.getTargetPosition());
+        telemetry.addData("Bar Lift Encoder Position", barLift.getCurrentPosition());
+        telemetry.addData("Bar Lift Desired Position", barLift.getTargetPosition());
         telemetry.update();
     }
 }
