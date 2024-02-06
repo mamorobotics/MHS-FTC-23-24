@@ -19,7 +19,6 @@ import java.util.List;
 
 @Autonomous(name = "BlueFar")
 public class BlueFar extends LinearOpMode {
-
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     Pose2d startpos = new Pose2d(-72 + (14.25 / 2), 72 - (17 / 2), Math.toRadians(270));
 
@@ -53,19 +52,6 @@ public class BlueFar extends LinearOpMode {
 
         waitForStart();
 
-//        TrajectorySequence seqLeft = drive.trajectorySequenceBuilder(startPos)
-//                .lineToConstantHeading(new Vector2d(-61, -61))
-//                .build();
-//
-//        TrajectorySequence seqMiddle = drive.trajectorySequenceBuilder(startPos)
-//                .lineToConstantHeading(new Vector2d(-61, -61))
-//                .build();
-//
-//        TrajectorySequence seqRight = drive.trajectorySequenceBuilder(startPos)
-//                .lineToConstantHeading(new Vector2d(-61, -61))
-//                .build();
-
-
         if(centerPoint.getX() < 500){
             telemetry.addData("left", "");
         }
@@ -79,7 +65,7 @@ public class BlueFar extends LinearOpMode {
 
         drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
         Trajectory right = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
-                .strafeRight(27, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .strafeLeft(27, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         drive.followTrajectory(right);
 
@@ -91,17 +77,27 @@ public class BlueFar extends LinearOpMode {
 
         drive.setPoseEstimate(startpos);
         TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startpos)
-                .lineToLinearHeading(new Pose2d(-36, 37, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(48, 37, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(30, 37, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-60, 37, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-40, 35.5, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(48, 35.5, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(35, 60, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(72 - (17 / 2), 72 - (14.25 / 2), Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-12, 60, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-12, 59, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-12, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(30, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-12, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-12, 60, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-36, 60, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-48, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-48, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-36, 60, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-12, 60, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-12, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(40,44, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(70,70,Math.toRadians(270)))
                 .build();
         drive.followTrajectorySequence(seq1);
     }
+
     /**
      * Initialize the TensorFlow Object Detection processor.
      */
