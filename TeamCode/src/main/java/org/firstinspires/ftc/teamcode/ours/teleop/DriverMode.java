@@ -32,7 +32,7 @@ public class DriverMode extends OpMode {
         driveTrain.move(gamepad1.right_stick_x, -gamepad1.left_stick_y, gamepad1.left_stick_x, speed + ((1 - speed) * gamepad1.left_trigger));
 
         //runBarLift();
-        //runScoop();
+        runScoop();
 
         runTelemetry();
     }
@@ -46,9 +46,9 @@ public class DriverMode extends OpMode {
 
     private void runScoop()
     {
-        int scoopTopPos = 1258;
-        int scoopBottomPos = 1258;
-        double attcSpeed = 0.5;
+        int scoopTopPos = -280;
+        int scoopBottomPos = -52;
+        double attcSpeed = 0.3;
 
         if(gamepad2.dpad_up) {
             scoop.setTargetPosition(scoopTopPos);
