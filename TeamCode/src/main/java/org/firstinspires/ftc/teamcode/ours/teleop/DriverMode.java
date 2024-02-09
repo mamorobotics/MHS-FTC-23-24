@@ -19,6 +19,7 @@ public class DriverMode extends OpMode {
         driveTrain.reverse(DriveTrain.DriveTrainSide.LEFT);
 
         scoop = hardwareMap.get(DcMotorEx.class, "scoop");
+        scoop.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         scoop.setDirection(DcMotorSimple.Direction.REVERSE);
         scoop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -29,7 +30,7 @@ public class DriverMode extends OpMode {
 
     @Override
     public void loop() {
-        driveTrain.move(gamepad1.right_stick_x, -gamepad1.left_stick_y, gamepad1.left_stick_x, speed + ((1 - speed) * gamepad1.left_trigger));
+        driveTrain.move(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, speed + ((1 - speed) * gamepad1.left_trigger));
 
         //runBarLift();
         runScoop();
@@ -46,9 +47,9 @@ public class DriverMode extends OpMode {
 
     private void runScoop()
     {
-        int scoopTopPos = -280;
-        int scoopBottomPos = -52;
-        double attcSpeed = 0.3;
+        int scoopTopPos = 1565;
+        int scoopBottomPos = 512;
+        double attcSpeed = 0.15;
 
         if(gamepad2.dpad_up) {
             scoop.setTargetPosition(scoopTopPos);
