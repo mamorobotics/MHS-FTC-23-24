@@ -50,7 +50,7 @@ public class BlueFar extends LinearOpMode {
         int scoopBottomPos = 512;
         int scoopLiftPos = 700;
         int scoopBLiftPos  = 180;
-        double attcSpeed = 0.15;
+        double attcSpeed = 0.3;
 
         scoop = hardwareMap.get(DcMotorEx.class, "scoop");
         scoop.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -100,50 +100,72 @@ public class BlueFar extends LinearOpMode {
 
         drive.setPoseEstimate(startpos);
 
-        if(centerPoint != null) {
-            if (centerPoint.getX() < 380) {
-                telemetry.addData("left", "");
-                telemetry.update();
-                drive.setPoseEstimate(startpos);
-                seq0 = drive.trajectorySequenceBuilder(startpos)
-                        .lineToLinearHeading(new Pose2d(-34, 38, Math.toRadians(330)))
-                        .build();
-                drive.followTrajectorySequence(seq0);
-            } else if (centerPoint.getX() >= 380) {
-                telemetry.addData("center", "");
-                telemetry.update();
-                seq0 = drive.trajectorySequenceBuilder(startpos)
-                        .lineToLinearHeading(new Pose2d(-44.5, 34.5, Math.toRadians(270)))
-                        .build();
-                drive.followTrajectorySequence(seq0);
-            } else {
-                telemetry.addData("right", "");
-                telemetry.update();
-                seq0 = drive.trajectorySequenceBuilder(startpos)
-                        .lineToLinearHeading(new Pose2d(-51, 46, Math.toRadians(300)))
-                        .build();
-                drive.followTrajectorySequence(seq0);
-            }
-
-            scoop.setTargetPosition(0);
-            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            scoop.setPower(attcSpeed);
-            while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
-
-        }else{
+        if(centerPoint == null) {
+            telemetry.addData("right", "");
+            telemetry.update();
             seq0 = drive.trajectorySequenceBuilder(startpos)
+                    .lineToLinearHeading(new Pose2d(-55, 45, Math.toRadians(300)))
                     .build();
             drive.followTrajectorySequence(seq0);
+            startpos = seq0.end();
         }
+        else if (centerPoint.getX() < 380) {
+            telemetry.addData("left", "");
+            telemetry.update();
+            drive.setPoseEstimate(startpos);
+            seq0 = drive.trajectorySequenceBuilder(startpos)
+                    .lineToLinearHeading(new Pose2d(-37.5, 36.5, Math.toRadians(344)))
+                    .build();
+            drive.followTrajectorySequence(seq0);
+            startpos = seq0.end();
+        } else{
+            telemetry.addData("center", "");
+            telemetry.update();
+            seq0 = drive.trajectorySequenceBuilder(startpos)
+                    .lineToLinearHeading(new Pose2d(-44.5, 34.5, Math.toRadians(270)))
+                    .build();
+            drive.followTrajectorySequence(seq0);
+            startpos = seq0.end();
+        }
+
+        scoop.setTargetPosition(0);
+        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        scoop.setPower(attcSpeed);
+        while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
         telemetry.update();
 
-        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(seq0.end())
+        scoop.setTargetPosition(scoopBottomPos);
+        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        scoop.setPower(attcSpeed);
+
+        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startpos)
+                .lineToLinearHeading(new Pose2d(-60, 48, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-59, 10, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-48, 10, Math.toRadians(180)))
+                .build();
+        drive.followTrajectorySequence(seq1);
+
+        scoop.setTargetPosition(70);
+        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        scoop.setPower(attcSpeed);
+        while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
+
+        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(seq1.end())
+                .lineToLinearHeading(new Pose2d(-72 + (17 / 2), 10, Math.toRadians(180)))
+                .build();
+        drive.followTrajectorySequence(seq2);
+
+        scoop.setTargetPosition(scoopBottomPos);
+        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        scoop.setPower(attcSpeed);
+
+        TrajectorySequence seq3 = drive.trajectorySequenceBuilder(seq2.end())
                 .lineToLinearHeading(new Pose2d(-36, 6, Math.toRadians(90)))
                 .lineToLinearHeading(new Pose2d(24, 6, Math.toRadians(90)))
                 .lineToLinearHeading(new Pose2d(50, 36, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(54.5, 36, Math.toRadians(180)))
                 .build();
-        drive.followTrajectorySequence(seq1);
+        drive.followTrajectorySequence(seq3);
 
         scoop.setTargetPosition(scoopTopPos);
         scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -183,16 +205,16 @@ public class BlueFar extends LinearOpMode {
 //        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        scoop.setPower(attcSpeed);
 
-        TrajectorySequence seq5 = drive.trajectorySequenceBuilder(seq1.end())
+       // TrajectorySequence seq5 = drive.trajectorySequenceBuilder(seq1.end())
 //                .lineToLinearHeading(new Pose2d(-48, 36, Math.toRadians(180)))
 //                .lineToLinearHeading(new Pose2d(-36, 6, Math.toRadians(90)))
 //                .lineToLinearHeading(new Pose2d(24, 6, Math.toRadians(90)))
 //                .lineToLinearHeading(new Pose2d(50, 36, Math.toRadians(180)))
 //                .lineToLinearHeading(new Pose2d(52, 36, Math.toRadians(180)))
-                .lineToSplineHeading(new Pose2d(40,44, Math.toRadians(0)))
-                .lineToSplineHeading(new Pose2d(72 - (14.25 / 2), 72 - 10, Math.toRadians(180)))
-                .build();
-        drive.followTrajectorySequence(seq5);
+//                .lineToSplineHeading(new Pose2d(40,44, Math.toRadians(0)))
+//                .lineToSplineHeading(new Pose2d(72 - (14.25 / 2), 72 - 10, Math.toRadians(180)))
+//                .build();
+//        drive.followTrajectorySequence(seq5);
     }
 
     /**
