@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.*;
 @ com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
 public class DriverMode extends OpMode {
     static DriveTrain driveTrain = new DriveTrain();
-    static double speed = 0.4;
+    static double speed = 0.5;
 
-    static double scoopSpeed = 0.15;
+    static double scoopSpeed = 0.3;
 
     static boolean gate = false;
 
@@ -26,7 +26,6 @@ public class DriverMode extends OpMode {
         scoop.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         scoop.setDirection(DcMotorSimple.Direction.REVERSE);
         scoop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         barLift = hardwareMap.get(DcMotorEx.class, "barLift");
         barLift.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -59,14 +58,17 @@ public class DriverMode extends OpMode {
 
         if(gamepad2.dpad_up) {
             scoop.setTargetPosition(scoopTopPos);
+            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             scoop.setPower(attcSpeed);
         }
         if(gamepad2.dpad_right) {
             scoop.setTargetPosition(scoopBottomPos);
+            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             scoop.setPower(attcSpeed);
         }
         if(gamepad2.dpad_down) {
             scoop.setTargetPosition(0);
+            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             scoop.setPower(attcSpeed);
         }
     }
@@ -80,11 +82,13 @@ public class DriverMode extends OpMode {
         {
             gate = true;
             scoop.setTargetPosition(lowerOpenGate);
+            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             scoop.setPower(0.15);
         } else if (gate)
         {
             gate = false;
             scoop.setTargetPosition(upperOpenGate);
+            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             scoop.setPower(0.15);
         }
     }
