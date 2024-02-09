@@ -8,6 +8,10 @@ public class DriverMode extends OpMode {
     static DriveTrain driveTrain = new DriveTrain();
     static double speed = 0.4;
 
+    static double scoopSpeed = 0.15;
+
+    static boolean gate = false;
+
     static DcMotor barLift;
     static DcMotor scoop;
 
@@ -22,6 +26,7 @@ public class DriverMode extends OpMode {
         scoop.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         scoop.setDirection(DcMotorSimple.Direction.REVERSE);
         scoop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         barLift = hardwareMap.get(DcMotorEx.class, "barLift");
         barLift.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -32,8 +37,9 @@ public class DriverMode extends OpMode {
     public void loop() {
         driveTrain.move(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, speed + ((1 - speed) * gamepad1.left_trigger));
 
-        //runBarLift();
+        runBarLift();
         runScoop();
+        runGateScoop();
 
         runTelemetry();
     }
@@ -53,35 +59,49 @@ public class DriverMode extends OpMode {
 
         if(gamepad2.dpad_up) {
             scoop.setTargetPosition(scoopTopPos);
-            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             scoop.setPower(attcSpeed);
         }
         if(gamepad2.dpad_right) {
             scoop.setTargetPosition(scoopBottomPos);
-            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             scoop.setPower(attcSpeed);
         }
         if(gamepad2.dpad_down) {
             scoop.setTargetPosition(0);
-            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             scoop.setPower(attcSpeed);
+        }
+    }
+
+    private void runGateScoop()
+    {
+        int lowerOpenGate = 180;
+        int upperOpenGate = 700; 
+
+        if (gamepad2.x)
+        {
+            gate = true;
+            scoop.setTargetPosition(lowerOpenGate);
+            scoop.setPower(0.15);
+        } else if (gate)
+        {
+            gate = false;
+            scoop.setTargetPosition(upperOpenGate);
+            scoop.setPower(0.15);
         }
     }
 
     private void runBarLift()
     {
         int barTopPos = 1258;
-        double attcSpeed = 0.5;
 
         if(gamepad2.a) {
             barLift.setTargetPosition(barTopPos);
             barLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            barLift.setPower(attcSpeed);
+            barLift.setPower(scoopSpeed);
         }
         if(gamepad2.b) {
             barLift.setTargetPosition(0);
             barLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            barLift.setPower(attcSpeed);
+            barLift.setPower(scoopSpeed);
         }
     }
 }
