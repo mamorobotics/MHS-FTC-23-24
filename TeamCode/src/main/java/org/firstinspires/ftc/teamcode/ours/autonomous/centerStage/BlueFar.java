@@ -20,7 +20,7 @@ import java.util.List;
 @Autonomous(name = "BlueFar")
 public class BlueFar extends LinearOpMode {
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-    Pose2d startpos = new Pose2d(-72 + (14.25 / 2), 72 - (17 / 2), Math.toRadians(270));
+    Pose2d startpos = new Pose2d(-72 + (14.25 / 2), 72 - 10, Math.toRadians(270));
 
 
     /**
@@ -77,23 +77,19 @@ public class BlueFar extends LinearOpMode {
 
         drive.setPoseEstimate(startpos);
         TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startpos)
-                .lineToLinearHeading(new Pose2d(-12, 60, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(-12, 59, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(-12, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(24, 12, Math.toRadians(90)))
                 .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(30, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-12, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-12, 60, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-36, 60, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(24, 12, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(-48, 36, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(-48, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-36, 60, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(-12, 60, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(-12, 36, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-36, 12, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(24, 12, Math.toRadians(90)))
                 .lineToLinearHeading(new Pose2d(48, 36, Math.toRadians(0)))
                 .lineToSplineHeading(new Pose2d(40,44, Math.toRadians(0)))
-                .lineToSplineHeading(new Pose2d(70,70,Math.toRadians(270)))
+                .lineToSplineHeading(startpos)
                 .build();
         drive.followTrajectorySequence(seq1);
     }
