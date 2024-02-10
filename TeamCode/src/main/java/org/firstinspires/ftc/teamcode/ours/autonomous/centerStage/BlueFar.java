@@ -141,40 +141,26 @@ public class BlueFar extends LinearOpMode {
         TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startpos)
                 .lineToLinearHeading(new Pose2d(-60, 48, Math.toRadians(270)))
                 .lineToLinearHeading(new Pose2d(-59, 10, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(-48, 10, Math.toRadians(180)))
                 .build();
         drive.followTrajectorySequence(seq1);
-
-        scoop.setTargetPosition(70);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scoop.setPower(attcSpeed);
-        while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
-
-        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(seq1.end())
-                .lineToLinearHeading(new Pose2d(-72 + (17 / 2), 10, Math.toRadians(180)))
-                .build();
-        drive.followTrajectorySequence(seq2);
 
         scoop.setTargetPosition(scoopBottomPos);
         scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         scoop.setPower(attcSpeed);
 
-        TrajectorySequence seq3 = drive.trajectorySequenceBuilder(seq2.end())
+        TrajectorySequence seq3 = drive.trajectorySequenceBuilder(seq1.end())
                 .lineToLinearHeading(new Pose2d(-36, 6, Math.toRadians(90)))
                 .lineToLinearHeading(new Pose2d(24, 6, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(50, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(54.5, 36, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(50, 36, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(72 - 9, 70 - 10, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(72 - 4, 70 - 10, Math.toRadians(180)))
                 .build();
         drive.followTrajectorySequence(seq3);
 
-        scoop.setTargetPosition(scoopTopPos);
+        scoop.setTargetPosition(0);
         scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         scoop.setPower(attcSpeed);
-        while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
-        scoop.setTargetPosition(scoopBLiftPos);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scoop.setPower(attcSpeed);
-        while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
+
 
 //        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(seq1.end())
 //                .lineToLinearHeading(new Pose2d(8, 6, Math.toRadians(180)))
