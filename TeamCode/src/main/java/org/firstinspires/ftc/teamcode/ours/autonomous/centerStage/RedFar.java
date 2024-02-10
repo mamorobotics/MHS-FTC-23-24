@@ -26,7 +26,7 @@ public class RedFar extends LinearOpMode {
     static DcMotor scoop;
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-    Pose2d startpos = new Pose2d(-72 + (14.25 / 2), -72 + 10, Math.toRadians(270));
+    Pose2d startpos = new Pose2d(-72 + (14.25 / 2), -72 + 10, Math.toRadians(90));
 
 
     /**
@@ -57,21 +57,21 @@ public class RedFar extends LinearOpMode {
         scoop.setDirection(DcMotorSimple.Direction.REVERSE);
         scoop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        scoop.setTargetPosition(scoopBottomPos);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scoop.setPower(attcSpeed);
-
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Vector2d centerPoint = null;
 
         initTfod();
-        while(!isStarted() && centerPoint == null){
+        while(!isStarted()){
             centerPoint = telemetryTfod();
             telemetry.update();
         }
         visionPortal.close();
 
         waitForStart();
+
+        scoop.setTargetPosition(scoopBottomPos);
+        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        scoop.setPower(attcSpeed);
 
         if(centerPoint != null) {
             if (centerPoint.getX() < 460) {
@@ -84,14 +84,14 @@ public class RedFar extends LinearOpMode {
         }
         telemetry.update();
 
-        drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
-        Trajectory right = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
-                .strafeRight(27, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(90)));
+        Trajectory left = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(90)))
+                .strafeLeft(27, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        drive.followTrajectory(right);
+        drive.followTrajectory(left);
 
-        drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
-        Trajectory back = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
+        drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(90)));
+        Trajectory back = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(90)))
                 .back(2, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         drive.followTrajectory(back);
@@ -101,20 +101,20 @@ public class RedFar extends LinearOpMode {
         drive.setPoseEstimate(startpos);
 
         if(centerPoint == null) {
-            telemetry.addData("right", "");
-            telemetry.update();
-            seq0 = drive.trajectorySequenceBuilder(startpos)
-                    .lineToLinearHeading(new Pose2d(-55, -45, Math.toRadians(60)))
-                    .build();
-            drive.followTrajectorySequence(seq0);
-            startpos = seq0.end();
-        }
-        else if (centerPoint.getX() < 380) {
             telemetry.addData("left", "");
             telemetry.update();
             drive.setPoseEstimate(startpos);
             seq0 = drive.trajectorySequenceBuilder(startpos)
                     .lineToLinearHeading(new Pose2d(-37.5, -36.5, Math.toRadians(16)))
+                    .build();
+            drive.followTrajectorySequence(seq0);
+            startpos = seq0.end();
+        }
+        else if (centerPoint.getX() < 380) {
+            telemetry.addData("right", "");
+            telemetry.update();
+            seq0 = drive.trajectorySequenceBuilder(startpos)
+                    .lineToLinearHeading(new Pose2d(-55, -45, Math.toRadians(60)))
                     .build();
             drive.followTrajectorySequence(seq0);
             startpos = seq0.end();
@@ -139,8 +139,8 @@ public class RedFar extends LinearOpMode {
         scoop.setPower(attcSpeed);
 
         TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startpos)
-                .lineToLinearHeading(new Pose2d(-60, -48, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(-59, -10, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(-60, -48, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-59, -10, Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(seq1);
 

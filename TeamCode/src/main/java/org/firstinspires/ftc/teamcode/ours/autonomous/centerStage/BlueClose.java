@@ -20,7 +20,7 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "BlueFar")
+@Autonomous(name = "BlueClose")
 public class BlueClose extends LinearOpMode {
 
     static DcMotor scoop;
@@ -47,11 +47,11 @@ public class BlueClose extends LinearOpMode {
 
     private int minConfidenceValue = 90;
     @Override
-    public void runOpMode() throws InterruptedException{
+    public void runOpMode() throws InterruptedException {
         int scoopTopPos = 1565;
         int scoopBottomPos = 512;
         int scoopLiftPos = 700;
-        int scoopBLiftPos  = 180;
+        int scoopBLiftPos = 180;
         double attcSpeed = 0.15;
 
         scoop = hardwareMap.get(DcMotorEx.class, "scoop");
@@ -59,15 +59,11 @@ public class BlueClose extends LinearOpMode {
         scoop.setDirection(DcMotorSimple.Direction.REVERSE);
         scoop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        scoop.setTargetPosition(scoopBottomPos);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scoop.setPower(attcSpeed);
-
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Vector2d centerPoint = null;
 
         initTfod();
-        while(!isStarted() && centerPoint == null){
+        while (!isStarted()) {
             centerPoint = telemetryTfod();
             telemetry.update();
         }
@@ -75,7 +71,11 @@ public class BlueClose extends LinearOpMode {
 
         waitForStart();
 
-        if(centerPoint != null) {
+        scoop.setTargetPosition(scoopBottomPos);
+        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        scoop.setPower(attcSpeed);
+
+        if (centerPoint != null) {
             if (centerPoint.getX() < 460) {
                 telemetry.addData("left", "");
             } else if (centerPoint.getX() >= 460) {
@@ -86,15 +86,15 @@ public class BlueClose extends LinearOpMode {
         }
         telemetry.update();
 
-        drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
-        Trajectory left = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
-                .strafeLeft(51, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(270)));
+        Trajectory left = drive.trajectoryBuilder(new Pose2d(0, 0, Math.toRadians(270)))
+                .strafeLeft(57, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         drive.followTrajectory(left);
 
-        drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
-        Trajectory back = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
-                .back(2, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(270)));
+        Trajectory back = drive.trajectoryBuilder(new Pose2d(0, 0, Math.toRadians(270)))
+                .back(4, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         drive.followTrajectory(back);
 
@@ -102,46 +102,45 @@ public class BlueClose extends LinearOpMode {
 
         drive.setPoseEstimate(startpos);
 
-        if(centerPoint != null) {
-            if (centerPoint.getX() < 380) {
-                telemetry.addData("left", "");
-                telemetry.update();
-                drive.setPoseEstimate(startpos);
-                seq0 = drive.trajectorySequenceBuilder(startpos)
-                        .lineToLinearHeading(new Pose2d(24+botWidth, 38, Math.toRadians(225)))
-                        .build();
-                drive.followTrajectorySequence(seq0);
-            } else if (centerPoint.getX() >= 380) {
-                telemetry.addData("center", "");
-                telemetry.update();
-                seq0 = drive.trajectorySequenceBuilder(startpos)
-                        .lineToLinearHeading(new Pose2d(18, 34.5, Math.toRadians(270)))
-                        .build();
-                drive.followTrajectorySequence(seq0);
-            } else {
-                telemetry.addData("right", "");
-                telemetry.update();
-                seq0 = drive.trajectorySequenceBuilder(startpos)
-                        .lineToLinearHeading(new Pose2d(12, 36, Math.toRadians(180)))
-                        .build();
-                drive.followTrajectorySequence(seq0);
-            }
+        TrajectorySequence seq3;
+        seq3 = drive.trajectorySequenceBuilder(startpos)
+                .lineToLinearHeading(new Pose2d(48, 72 - botWidth - 6, Math.toRadians(270)))
+                .build();
+        drive.followTrajectorySequence(seq3);
 
-            scoop.setTargetPosition(0);
-            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            scoop.setPower(attcSpeed);
-            while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
-
-        }else{
-            seq0 = drive.trajectorySequenceBuilder(startpos)
+        if (centerPoint == null) {
+            telemetry.addData("right", "");
+            telemetry.update();
+            seq0 = drive.trajectorySequenceBuilder(seq3.end())
+                    .lineToLinearHeading(new Pose2d(12, 36, Math.toRadians(180)))
+                    .build();
+            drive.followTrajectorySequence(seq0);
+        } else if (centerPoint.getX() < 380) {
+            telemetry.addData("left", "");
+            telemetry.update();
+            seq0 = drive.trajectorySequenceBuilder(seq3.end())
+                    .lineToLinearHeading(new Pose2d(24 + botWidth, 41, Math.toRadians(225)))
+                    .build();
+            drive.followTrajectorySequence(seq0);
+        } else{
+            telemetry.addData("center", "");
+            telemetry.update();
+            seq0 = drive.trajectorySequenceBuilder(seq3.end())
+                    .lineToLinearHeading(new Pose2d(16, 34, Math.toRadians(270)))
                     .build();
             drive.followTrajectorySequence(seq0);
         }
+
+        scoop.setTargetPosition(0);
+        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        scoop.setPower(attcSpeed);
+        while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
+
         telemetry.update();
 
         TrajectorySequence seq1 = drive.trajectorySequenceBuilder(seq0.end())
-                .lineToLinearHeading(new Pose2d(72 - botWidth - 3, 48, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(72 - botWidth, 72 - botWidth, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(48, 72 - botWidth - 6, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(72 - botWidth, 72 - botWidth - 6, Math.toRadians(180)))
                 .build();
         drive.followTrajectorySequence(seq1);
     }
