@@ -20,13 +20,15 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "BlueClose")
+@Autonomous(name = "BlueFar")
 public class BlueClose extends LinearOpMode {
 
     static DcMotor scoop;
 
+    double botWidth = 14.25 / 2.0;
+
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-    Pose2d startpos = new Pose2d(72 - (14.25 / 2), 72 - 8, Math.toRadians(270));
+    Pose2d startpos = new Pose2d(72 - botWidth, 72 - 10, Math.toRadians(270));
 
 
     /**
@@ -65,36 +67,30 @@ public class BlueClose extends LinearOpMode {
         Vector2d centerPoint = null;
 
         initTfod();
-        while(centerPoint == null){
+        while(!isStarted() && centerPoint == null){
             centerPoint = telemetryTfod();
             telemetry.update();
-
-            if (isStarted())
-            {
-                break;
-            }
         }
+        visionPortal.close();
 
         waitForStart();
 
-        visionPortal.close();
-
-        if(centerPoint.getX() < 500){
-            telemetry.addData("left", "");
-        }
-        else if(centerPoint.getX() > 500){
-            telemetry.addData("center", "");
-        }
-        else{
-            telemetry.addData("right", "");
+        if(centerPoint != null) {
+            if (centerPoint.getX() < 460) {
+                telemetry.addData("left", "");
+            } else if (centerPoint.getX() >= 460) {
+                telemetry.addData("center", "");
+            } else {
+                telemetry.addData("right", "");
+            }
         }
         telemetry.update();
 
         drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
-        Trajectory right = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
-                .strafeRight(27, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        Trajectory left = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
+                .strafeLeft(51, drive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        drive.followTrajectory(right);
+        drive.followTrajectory(left);
 
         drive.setPoseEstimate(new Pose2d(0,0, Math.toRadians(270)));
         Trajectory back = drive.trajectoryBuilder(new Pose2d(0,0, Math.toRadians(270)))
@@ -102,62 +98,52 @@ public class BlueClose extends LinearOpMode {
                 .build();
         drive.followTrajectory(back);
 
+        TrajectorySequence seq0;
+
         drive.setPoseEstimate(startpos);
-        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(startpos)
-                .lineToSplineHeading(new Pose2d(40,44, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(52, 36, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(52, 36, Math.toRadians(180)))
+
+        if(centerPoint != null) {
+            if (centerPoint.getX() < 380) {
+                telemetry.addData("left", "");
+                telemetry.update();
+                drive.setPoseEstimate(startpos);
+                seq0 = drive.trajectorySequenceBuilder(startpos)
+                        .lineToLinearHeading(new Pose2d(24+botWidth, 38, Math.toRadians(225)))
+                        .build();
+                drive.followTrajectorySequence(seq0);
+            } else if (centerPoint.getX() >= 380) {
+                telemetry.addData("center", "");
+                telemetry.update();
+                seq0 = drive.trajectorySequenceBuilder(startpos)
+                        .lineToLinearHeading(new Pose2d(18, 34.5, Math.toRadians(270)))
+                        .build();
+                drive.followTrajectorySequence(seq0);
+            } else {
+                telemetry.addData("right", "");
+                telemetry.update();
+                seq0 = drive.trajectorySequenceBuilder(startpos)
+                        .lineToLinearHeading(new Pose2d(12, 36, Math.toRadians(180)))
+                        .build();
+                drive.followTrajectorySequence(seq0);
+            }
+
+            scoop.setTargetPosition(0);
+            scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            scoop.setPower(attcSpeed);
+            while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
+
+        }else{
+            seq0 = drive.trajectorySequenceBuilder(startpos)
+                    .build();
+            drive.followTrajectorySequence(seq0);
+        }
+        telemetry.update();
+
+        TrajectorySequence seq1 = drive.trajectorySequenceBuilder(seq0.end())
+                .lineToLinearHeading(new Pose2d(72 - botWidth - 3, 48, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(72 - botWidth, 72 - botWidth, Math.toRadians(180)))
                 .build();
         drive.followTrajectorySequence(seq1);
-
-        scoop.setTargetPosition(scoopTopPos);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scoop.setPower(attcSpeed);
-        while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
-        scoop.setTargetPosition(scoopBLiftPos);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scoop.setPower(attcSpeed);
-        while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
-
-        TrajectorySequence seq2 = drive.trajectorySequenceBuilder(seq1.end())
-                .lineToLinearHeading(new Pose2d(8, 6, Math.toRadians(180)))
-                .build();
-        drive.followTrajectorySequence(seq2);
-
-        scoop.setTargetPosition(scoopLiftPos);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scoop.setPower(attcSpeed);
-        while(scoop.getCurrentPosition() != scoop.getTargetPosition()){}
-
-        TrajectorySequence seq3 = drive.trajectorySequenceBuilder(seq2.end())
-                .lineToLinearHeading(new Pose2d(-36, 6, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-48, 36, Math.toRadians(180)))
-                .build();
-        drive.followTrajectorySequence(seq3);
-
-        scoop.setTargetPosition(0);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scoop.setPower(attcSpeed);
-
-        TrajectorySequence seq4 = drive.trajectorySequenceBuilder(seq3.end())
-                .lineToLinearHeading(new Pose2d(-60, 36, Math.toRadians(180)))
-                .build();
-        drive.followTrajectorySequence(seq4);
-
-        scoop.setTargetPosition(scoopBottomPos);
-        scoop.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scoop.setPower(attcSpeed);
-
-        TrajectorySequence seq5 = drive.trajectorySequenceBuilder(seq4.end())
-                .lineToLinearHeading(new Pose2d(-48, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(-36, 6, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(24, 6, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(50, 36, Math.toRadians(180)))
-                .lineToLinearHeading(new Pose2d(52, 36, Math.toRadians(180)))
-                .lineToSplineHeading(new Pose2d(40,44, Math.toRadians(0)))
-                .lineToSplineHeading(new Pose2d(72 - (14.25 / 2), 72 - 10, Math.toRadians(180)))
-                .build();
-        drive.followTrajectorySequence(seq5);
     }
 
     /**
