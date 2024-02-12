@@ -25,7 +25,6 @@ public class DriverMode extends OpMode {
         scoop = hardwareMap.get(DcMotorEx.class, "scoop");
         scoop.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         scoop.setDirection(DcMotorSimple.Direction.REVERSE);
-        scoop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         barLift = hardwareMap.get(DcMotorEx.class, "barLift");
         barLift.setDirection(DcMotorSimple.Direction.REVERSE);
